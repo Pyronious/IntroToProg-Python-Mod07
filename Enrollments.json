@@ -1,0 +1,37 @@
+[
+    {
+        "FirstName": "Steven",
+        "LastName": "Spielberg",
+        "CourseName": "Blockbuster Basics"
+    },
+    {
+        "FirstName": "Martin",
+        "LastName": "Scorsese",
+        "CourseName": "Cinematic Storytelling"
+    },
+    {
+        "FirstName": "Christopher",
+        "LastName": "Nolan",
+        "CourseName": "Mind-Bending Narratives"
+    },
+    {
+        "FirstName": "Quentin",
+        "LastName": "Tarantino",
+        "CourseName": "Dialogue Mastery"
+    },
+    {
+        "FirstName": "Guillermo",
+        "LastName": "Del Toro",
+        "CourseName": "Fantasy Worldbuilding"
+    },
+    {
+        "FirstName": "James",
+        "LastName": "Cameron",
+        "CourseName": "Epic Filmmaking"
+    },
+    {
+        "FirstName": "Spike",
+        "LastName": "Lee",
+        "CourseName": "Social Commentary In Film"
+    }
+]

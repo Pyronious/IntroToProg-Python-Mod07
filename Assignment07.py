@@ -411,4 +411,4 @@ while True:
             exit()
 
     else:
-        IO.print_warning("Please only choose option 1, 2, 3, or 4.")
+        IO.print_warning(">>> Please choose option 1, 2, 3, or 4.")

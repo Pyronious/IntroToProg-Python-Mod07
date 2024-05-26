@@ -114,6 +114,9 @@ class Person:
         except ValueError as e:
             IO.output_error_messages(e)
 
+    def __str__(self):
+        return f"{self.first_name},{self.last_name}"
+
 
 class Student(Person):
     """
@@ -156,6 +159,9 @@ class Student(Person):
                 self.__course_name = value.title()  # Store private attribute
         except ValueError as e:
             IO.output_error_messages(e)
+
+    def __str__(self):
+        return f"{self.first_name},{self.last_name},{self.course_name}"
 
 
 class FileProcessor:
@@ -232,7 +238,7 @@ class FileProcessor:
 
         # Loop through the Students in student_data and convert to JSON
         for registrant in student_data:
-            record = {"FirstName": registrant.first_name, "LastName": registrant.last_name,
+            record: dict = {"FirstName": registrant.first_name, "LastName": registrant.last_name,
                       "CourseName": registrant.course_name}  # Format the data as a dict
             json_data.append(record)  # Append the dict to json_data
 

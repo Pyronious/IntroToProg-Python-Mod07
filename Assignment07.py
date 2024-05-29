@@ -225,6 +225,10 @@ class FileProcessor:
 
     @staticmethod
     def write_data_to_file(file_name: str, student_data: list) -> bool:
+        # In the assignment 6 review, Kelly recommended returning student_data from this method, but I don't understand
+        # why that would be desirable. We don't change the value of student_data in this method, so why return it?
+        # Nothing in the main code is expecting it to be returned, and all we use student_data for is to save the
+        # data to a file. Any clarification would be appreciated.
         """
                 Writes the provided list to a JSON file.
 
@@ -239,7 +243,7 @@ class FileProcessor:
         # Loop through the Students in student_data and convert to JSON
         for registrant in student_data:
             record: dict = {"FirstName": registrant.first_name, "LastName": registrant.last_name,
-                      "CourseName": registrant.course_name}  # Format the data as a dict
+                            "CourseName": registrant.course_name}  # Format the data as a dict
             json_data.append(record)  # Append the dict to json_data
 
         try:
@@ -249,14 +253,12 @@ class FileProcessor:
             file.close()
             IO.print_info(f">>> Wrote registration data to {file_name}\n")
 
-            # Print JSON data to terminal
-            json_data = json.dumps(json_data, indent=4)
-            print(json_data)
-            return True
+            return True  # Let the caller know we saved successfully
 
         except Exception as e:
             IO.output_error_messages(">>> There was an error writing the registration data. Is the file read-only?")
             IO.output_error_messages(f">>> {e}", e.__doc__)
+            return False  # Let the caller know we failed to save the file
         finally:
             # Does file have a value other than None? If so, is the file open? If so, close the file.
             if file and not file.closed:
@@ -328,15 +330,12 @@ class IO:
         IO.print_info("-----------------------------------------------------------------")
 
     @staticmethod
-    def input_student_data(student_data: list) -> None:
+    def input_student_data(student_data: list) -> list:
         """
         Reads the student registration data from the user and appends it to a list
 
         :param student_data: list to which student data will be appended
         """
-        student_first_name: str = ''  # Holds the first name of a student entered by the user.
-        student_last_name: str = ''  # Holds the last name of a student entered by the user.
-        course_name: str = ''  # Holds the name of a course entered by the user.
 
         # Input user data for new student registration
         IO.print_info(">>> Register a student for a course\n")
@@ -352,6 +351,7 @@ class IO:
 
         student_data.append(registrant)  # Append the entered data to the passed-in list
         IO.print_info(f">>> Registered {registrant.first_name} {registrant.last_name} for {registrant.course_name}.")
+        return student_data
 
     @staticmethod
     def output_error_messages(message: str, error: Exception = None) -> None:
@@ -382,7 +382,7 @@ while True:
 
     if menu_choice == '1':
         # Ingest student registration data from user
-        IO.input_student_data(student_data=students)
+        students = IO.input_student_data(student_data=students)
         saved = False  # Set the saved flag to false, so we can remind user to save
         continue
 
@@ -395,6 +395,7 @@ while True:
         # Save the data to a file and set saved flag to True if save was successful
         if FileProcessor.write_data_to_file(file_name=FILE_NAME, student_data=students) == True:
             saved = True
+            IO.output_student_courses(student_data=students)
         continue
 
     elif menu_choice == '4':

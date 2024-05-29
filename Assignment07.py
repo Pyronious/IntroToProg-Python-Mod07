@@ -224,11 +224,11 @@ class FileProcessor:
                 file.close()
 
     @staticmethod
-    def write_data_to_file(file_name: str, student_data: list) -> bool:
+    def write_data_to_file(file_name: str, student_data: list) -> None:
         # In the assignment 6 review, Kelly recommended returning student_data from this method, but I don't understand
         # why that would be desirable. We don't change the value of student_data in this method, so why return it?
-        # Nothing in the main code is expecting it to be returned, and all we use student_data for is to save the
-        # data to a file. Any clarification would be appreciated.
+        # Nothing in the main loop is expecting it to be returned. We ony use student_data to save the data to a file.
+        # Any clarification would be appreciated.
         """
                 Writes the provided list to a JSON file.
 
@@ -253,16 +253,8 @@ class FileProcessor:
             file.close()
             IO.print_info(f">>> Wrote registration data to {file_name}\n")
 
-            return True  # Let the caller know we saved successfully
-
         except Exception as e:
-            IO.output_error_messages(">>> There was an error writing the registration data. Is the file read-only?")
-            IO.output_error_messages(f">>> {e}", e.__doc__)
-            return False  # Let the caller know we failed to save the file
-        finally:
-            # Does file have a value other than None? If so, is the file open? If so, close the file.
-            if file and not file.closed:
-                file.close()
+            raise Exception(e)
 
 
 class IO:
@@ -393,10 +385,15 @@ while True:
 
     elif menu_choice == '3':
         # Save the data to a file and set saved flag to True if save was successful
-        if FileProcessor.write_data_to_file(file_name=FILE_NAME, student_data=students) == True:
+        try:
+            FileProcessor.write_data_to_file(file_name=FILE_NAME, student_data=students)
             saved = True
             IO.output_student_courses(student_data=students)
-        continue
+            continue
+        except Exception as e:
+            IO.output_error_messages(">>> There was an error writing the registration data. Is the file read-only?")
+            IO.output_error_messages(f">>> {e}", e.__doc__)
+            continue
 
     elif menu_choice == '4':
         # Exit if data has already been saved or was unmodified (i.e. saved = undefined)
@@ -404,11 +401,16 @@ while True:
             IO.print_warning(">>> New registration data not saved. Save it now? (Y/N): ", False)
             save_confirm = input()
             if save_confirm.capitalize() == 'Y':
-                if FileProcessor.write_data_to_file(file_name=FILE_NAME, student_data=students) == True:
+                try:
+                    FileProcessor.write_data_to_file(file_name=FILE_NAME, student_data=students)
                     IO.print_info(">>> Have a nice day!\n")
                     exit()
-                else:
+                except Exception as e:
+                    IO.output_error_messages(
+                        ">>> There was an error writing the registration data. Is the file read-only?")
+                    IO.output_error_messages(f">>> {e}", e.__doc__)
                     continue  # File was not successfully saved, so return to main menu
+
             elif save_confirm.capitalize() == 'N':
                 IO.print_warning(">>> Newly entered data not saved.")
                 IO.print_info(">>> Have a nice day!\n")
